@@ -1,0 +1,19 @@
+# CMake build folders
+/build/
+/CMakeFiles/
+/CMakeCache.txt
+
+# Visual Studio cache
+/.vs/
+/.vscode/
+
+# Binary outputs
+/bin/
+/lib/
+/*.exe
+/*.pdb
+
+# User-specific settings
+*.user
+*.suo
+*.VC.db
