@@ -7,14 +7,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 # Dependencies
 include(FetchContent)
 
-# GLAD
-FetchContent_Declare(
-  glad
-  GIT_REPOSITORY https://github.com/Dav1dde/glad.git
-  GIT_TAG        1320e6e81873c7cc85558a954ef6d4e6a9c0387b  # known working commit
-)
-FetchContent_MakeAvailable(glad)
-
 # GLFW
 FetchContent_Declare(
   glfw
@@ -45,6 +37,10 @@ FetchContent_Declare(
   GIT_TAG        v3.12.2
 )
 FetchContent_MakeAvailable(entt)
+
+# GLAD (manual)
+add_library(glad STATIC external/glad/src/glad.c)
+target_include_directories(glad PUBLIC external/glad/include)
 
 # Executable
 add_executable(Simulator
