@@ -11,7 +11,7 @@ include(FetchContent)
 FetchContent_Declare(
   glad
   GIT_REPOSITORY https://github.com/Dav1dde/glad.git
-  GIT_TAG        main
+  GIT_TAG        1e64fb9e63bc0f7cf78c13a7d1e046b9b5bbd0a7  # known working commit
 )
 FetchContent_MakeAvailable(glad)
 
