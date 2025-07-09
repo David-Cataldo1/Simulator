@@ -17,12 +17,22 @@ FetchContent_MakeAvailable(glfw)
 add_library(glad STATIC external/glad/src/glad.c)
 target_include_directories(glad PUBLIC external/glad/include)
 
-# Recursively gather all source and header files in src/
+
+# Collect all sources
 file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS
     src/*.cpp
     src/*.h
 )
 
+# Organize files in folders (Visual Studio only)
+foreach(FILE ${SRC_FILES})
+    get_filename_component(PARENT_DIR "${FILE}" DIRECTORY)
+    string(REPLACE "${CMAKE_CURRENT_SOURCE_DIR}/src/" "" GROUP "${PARENT_DIR}")
+    string(REPLACE "/" "\\" GROUP "${GROUP}")
+    source_group("${GROUP}" FILES "${FILE}")
+endforeach()
+
+# Define executable
 add_executable(Simulator ${SRC_FILES})
 
 # Include directories
