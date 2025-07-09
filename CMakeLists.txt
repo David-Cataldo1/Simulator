@@ -18,21 +18,21 @@ add_library(glad STATIC external/glad/src/glad.c)
 target_include_directories(glad PUBLIC external/glad/include)
 
 
-# Collect all sources
+# Collect all .cpp and .h files in src/
 file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS
-    src/*.cpp
-    src/*.h
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h"
 )
 
-# Organize files in folders (Visual Studio only)
-foreach(FILE ${SRC_FILES})
-    get_filename_component(PARENT_DIR "${FILE}" DIRECTORY)
-    string(REPLACE "${CMAKE_CURRENT_SOURCE_DIR}/src/" "" GROUP "${PARENT_DIR}")
-    string(REPLACE "/" "\\" GROUP "${GROUP}")
-    source_group("${GROUP}" FILES "${FILE}")
+# Group files in Visual Studio by physical folder
+foreach(SRC_FILE ${SRC_FILES})
+    file(RELATIVE_PATH REL_PATH "${CMAKE_CURRENT_SOURCE_DIR}/src" "${SRC_FILE}")
+    get_filename_component(GROUP_PATH "${REL_PATH}" PATH)
+    string(REPLACE "/" "\\" GROUP_PATH "${GROUP_PATH}")
+    source_group("${GROUP_PATH}" FILES "${SRC_FILE}")
 endforeach()
 
-# Define executable
+# Executable target
 add_executable(Simulator ${SRC_FILES})
 
 # Include directories
@@ -46,3 +46,6 @@ target_include_directories(Simulator PRIVATE
 
 # Link libraries
 target_link_libraries(Simulator PRIVATE glfw glad)
+
+# Set as startup project in Visual Studio
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Simulator)
