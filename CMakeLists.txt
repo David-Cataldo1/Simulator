@@ -1,10 +1,11 @@
 cmake_minimum_required(VERSION 3.20)
-project(Simulator)
+project(Simulator LANGUAGES CXX CUDA)
 
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CUDA_STANDARD 20)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-# GLFW (the only one we'll fetch)
+# GLFW (FetchContent)
 include(FetchContent)
 FetchContent_Declare(
   glfw
@@ -17,10 +18,10 @@ FetchContent_MakeAvailable(glfw)
 add_library(glad STATIC external/glad/src/glad.c)
 target_include_directories(glad PUBLIC external/glad/include)
 
-
-# Collect all .cpp and .h files in src/
+# Collect all .cpp, .cu, and .h files in src/
 file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cu"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h"
 )
 
@@ -32,7 +33,7 @@ foreach(SRC_FILE ${SRC_FILES})
     source_group("${GROUP_PATH}" FILES "${SRC_FILE}")
 endforeach()
 
-# Executable target
+# Executable target with CUDA support
 add_executable(Simulator ${SRC_FILES})
 
 # Include directories
@@ -42,10 +43,22 @@ target_include_directories(Simulator PRIVATE
     external/stb
     external/entt
     external/spdlog
+    external/glad/include
+    ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES} # CUDA headers
 )
 
 # Link libraries
-target_link_libraries(Simulator PRIVATE glfw glad)
+target_link_libraries(Simulator PRIVATE
+    glfw
+    glad
+    OpenGL::GL
+)
+
+# Optional: Target GPU architecture
+set(CMAKE_CUDA_ARCHITECTURES 75)  # 75 = Turing (RTX 2070/3070)
+
+# Ensure .cu files are compiled as CUDA, not C++
+set_source_files_properties(${SRC_FILES} PROPERTIES LANGUAGE CUDA)
 
 # Set as startup project in Visual Studio
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Simulator)
