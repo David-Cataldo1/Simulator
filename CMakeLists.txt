@@ -26,21 +26,15 @@ file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h"
 )
 
-# Group files in Visual Studio by physical folder
-# Group files in Visual Studio Solution Explorer and File View
-foreach(SRC_FILE ${SRC_FILES})
-    file(RELATIVE_PATH REL_PATH "${CMAKE_CURRENT_SOURCE_DIR}" "${SRC_FILE}")
-    get_filename_component(GROUP_PATH "${REL_PATH}" PATH)
-    string(REPLACE "/" "\\" GROUP_PATH "${GROUP_PATH}")
-    source_group("${GROUP_PATH}" FILES "${SRC_FILE}")
-endforeach()
-
+# Group source files in IDEs like Visual Studio by their physical folder
+source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/src" FILES ${SRC_FILES})
 
 # Executable target with CUDA support
 add_executable(Simulator ${SRC_FILES})
 
 # Include directories
 target_include_directories(Simulator PRIVATE
+    src
     include
     external/glm
     external/stb
