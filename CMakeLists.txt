@@ -51,7 +51,7 @@ target_include_directories(Simulator PRIVATE
 target_link_libraries(Simulator PRIVATE
     glfw
     glad
-    OpenGL::GL
+    opengl32
 )
 
 # Optional: Target GPU architecture
